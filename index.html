@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Трекер Намаза</title>
+<meta name="theme-color" content="#1b6b53">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Намаз">
+<style>
+:root{--bg:#f6f1e4;--card:#fffdf7;--tx:#1d2b26;--mut:#6b7a73;--em:#1b6b53;--ems:#dcefe6;--or:#d9801a;--ors:#fcecd3;--bd:#e3dac3;--gr:#d5d9d4;--yl:#efc84a}
+[data-theme=dark]{--bg:#0f1a17;--card:#16251f;--tx:#e8efe9;--mut:#8fa59b;--em:#3fae88;--ems:#1b3a2f;--or:#f0a040;--ors:#3a2c14;--bd:#25403a;--gr:#2b3934;--yl:#d9b23a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 90px;transition:background .3s}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px;max-width:100%}
+header,main{max-width:640px;margin:auto;padding:0 14px}
+header{display:flex;justify-content:space-between;align-items:center;padding-top:14px;padding-bottom:12px}
+h1{font:600 22px Georgia,"Times New Roman",serif;margin:0;color:var(--em)}
+h2{font:600 17px Georgia,serif;margin:0 0 10px}
+.pill{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:8px 14px}
+#inst{width:100%;margin-bottom:12px;background:var(--em);color:#fff;border:0;font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px}
+.hero{text-align:center;background:linear-gradient(160deg,var(--em),#0f4a3a);color:#fff;border-radius:22px;padding:20px 14px;margin-bottom:12px}
+#cd{font:700 clamp(42px,14vw,66px)/1.1 ui-monospace,Menlo,monospace;letter-spacing:2px;margin:8px 0}
+#gd{text-transform:capitalize;font-weight:600}#hd,#nxt{opacity:.85}
+.dnav{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}.dnav input{flex:1;min-width:120px}
+.dnav .on{background:var(--em);color:#fff;border-color:var(--em)}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--bd);background:var(--card);border-radius:16px;margin-bottom:8px;transition:background .3s,border-color .3s}
+.row.t{background:var(--ems);border-color:var(--em)}.row.q{background:var(--ors);border-color:var(--or)}
+.pn{flex:1;font-weight:600;font-size:18px}.tm{font:600 20px ui-monospace,Menlo,monospace;margin-right:4px}
+.bt,.bq{width:46px;height:46px;font-size:22px;background:transparent;display:grid;place-items:center;padding:0}
+.bt{border:2px solid var(--bd);border-radius:10px;color:var(--mut)}.bt.on{background:var(--em);border-color:var(--em);color:#fff}
+.bq{border:2px dashed var(--or);border-radius:50%;color:var(--or)}.bq.on{background:var(--or);color:#fff}
+.leg{color:var(--mut);font-size:14px;margin:4px 2px 12px}
+.night{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 14px}
+.qrow,.f{display:flex;align-items:center;gap:10px;padding:7px 0;justify-content:space-between}
+.qrow span{flex:1;font-weight:600}.qrow b{min-width:44px;text-align:center;font-size:20px}
+.qrow button{width:40px;height:40px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);font-size:22px;padding:0}
+.calc{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.calc label{flex:1;min-width:80px;font-size:14px;color:var(--mut)}.calc input{width:100%}
+.go{background:var(--em);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:600}
+.big{font:700 40px Georgia,serif;color:var(--em)}
+.hg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.hg div{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font-size:13px;background:var(--gr)}
+.hg .wd{background:none;aspect-ratio:auto;color:var(--mut)}.hg .g{background:var(--em);color:#fff}.hg .y{background:var(--yl);color:#222}.hg .f{opacity:.35}
+.mn{display:flex;justify-content:space-between;align-items:center}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;max-width:160px;background:none;border:0;padding:9px 4px;color:var(--mut);font-size:12px}
+nav button.on{color:var(--em);font-weight:700}nav span{display:block;font-size:21px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:12px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s}
+#toast.on{opacity:1}[hidden]{display:none!important}
+</style></head><body>
+<header><h1>🌙 Трекер Намаза</h1><button class="pill" id="th" title="Тема">◐</button></header>
+<main>
+<button id="inst" class="pill" hidden>📲 Установить на телефон</button>
+<section id="v-main">
+ <div class="hero"><div id="gd"></div><div id="hd"></div><div id="nxt"></div><div id="cd">--:--:--</div></div>
+ <div class="dnav"><button class="pill" id="pd">‹</button><button class="pill" id="yd">Вчера</button><button class="pill" id="td">Сегодня</button><input type="date" id="dp"><button class="pill" id="nd">›</button></div>
+ <div id="rows"></div>
+ <div class="leg">▢ ✓ — прочитан вовремя &nbsp; ◌ ↺ — каза</div>
+ <div class="night" id="night"></div>
+</section>
+<section id="v-qaza" hidden>
+ <div class="card"><h2>Долги каза</h2><div id="qc"></div><p id="qs"></p></div>
+ <div class="card"><h2>Калькулятор каза</h2>
+  <div class="calc"><label>Лет<input type="number" min="0" id="cy" value="0"></label><label>Месяцев<input type="number" min="0" id="cm" value="0"></label><label>Дней<input type="number" min="0" id="cdd" value="0"></label></div>
+  <p id="cr" style="color:var(--mut)"></p><button class="go" id="ca">Добавить в счётчик</button></div>
+</section>
+<section id="v-stats" hidden>
+ <div class="card"><div style="color:var(--mut)">Серия дней без пропусков</div><div class="big" id="sk">0</div></div>
+ <div class="card"><div class="mn"><button class="pill" id="mp">‹</button><h2 id="mt" style="margin:0"></h2><button class="pill" id="mx">›</button></div>
+  <div class="hg" id="hg"></div>
+  <div class="leg" style="margin-top:10px"><span style="color:var(--em)">■</span> все 5 вовремя &nbsp; <span style="color:var(--yl)">■</span> частично / каза &nbsp; <span style="color:var(--mut)">■</span> нет отметок</div><div id="ms"></div></div>
+</section>
+<section id="v-set" hidden>
+ <div class="card"><h2>Расписание</h2>
+  <div class="f">Город<select id="ci"></select></div>
+  <div class="f">Мазхаб (Аср)<select id="sc"><option value="1">Ханафи</option><option value="0">Шафии / другие</option></select></div></div>
+ <div class="card"><h2>Напоминания</h2>
+  <div class="f">Уведомления<button class="pill" id="nt"></button></div>
+  <div class="f">Заранее<select id="pr"><option value="0">Не напоминать</option><option value="5">за 5 мин</option><option value="10">за 10 мин</option><option value="15">за 15 мин</option><option value="30">за 30 мин</option></select></div>
+  <div class="f">Звук<select id="sn"><option value="off">Выкл</option><option value="beep">Короткий сигнал</option><option value="azan">Азан (mp3)</option></select></div>
+  <div class="f">Ссылка на mp3 азана<input id="az" placeholder="https://…" style="flex:1;min-width:0"></div>
+  <p class="leg">Уведомления приходят, пока приложение открыто или запущено в фоне.</p></div>
+ <div class="card"><h2>Данные</h2><div class="f"><button class="pill" id="ex">Экспорт JSON</button><button class="pill" onclick="im.click()">Импорт JSON</button><input type="file" id="im" accept=".json" hidden></div></div>
+</section>
+</main>
+<nav><button data-v="main" class="on"><span>🕌</span>Намазы</button><button data-v="qaza"><span>↺</span>Каза</button><button data-v="stats"><span>📅</span>Статистика</button><button data-v="set"><span>⚙</span>Настройки</button></nav>
+<div id="toast"></div>
+<script>
+const P=[['fajr','Фаджр'],['dhuhr','Зухр'],['asr','Аср'],['maghrib','Магриб'],['isha','Иша']],Q=[...P,['witr','Витр']];
+const CITIES={'Бишкек':['Bishkek','Kyrgyzstan'],'Ош':['Osh','Kyrgyzstan'],'Алматы':['Almaty','Kazakhstan'],'Ташкент':['Tashkent','Uzbekistan'],'Душанбе':['Dushanbe','Tajikistan'],'Москва':['Moscow','Russia'],'Казань':['Kazan','Russia'],'Стамбул':['Istanbul','Turkey'],'Баку':['Baku','Azerbaijan'],'Мекка':['Mecca','Saudi Arabia']};
+const $=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0');
+let S=Object.assign({city:'Бишкек',school:1,theme:matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light',pre:10,notif:false,sound:'beep',azan:'',log:{},qaza:{fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0,witr:0},fired:{}},JSON.parse(localStorage.getItem('namaz')||'{}'));
+const save=()=>localStorage.setItem('namaz',JSON.stringify(S));
+const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const at=(d,t)=>{const[h,m]=t.split(':');return new Date(d.getFullYear(),d.getMonth(),d.getDate(),+h,+m)};
+const hm=d=>d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+let view=new Date(),mo=new Date(),T={},tod=null,lastTry=0;
+function toast(m,ms=3000){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms)}
+async function getT(d){
+ const k=key(d)+S.city+S.school;if(T[k])return T[k];
+ const c=localStorage.getItem('tm'+k);if(c)return T[k]=JSON.parse(c);
+ try{const[ci,co]=CITIES[S.city];
+  const r=await fetch(`https://api.aladhan.com/v1/timingsByCity/${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}?city=${ci}&country=${co}&method=3&school=${S.school}`);
+  const t=(await r.json()).data.timings,o={};
+  ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].forEach(n=>o[n.toLowerCase()]=t[n].slice(0,5));
+  localStorage.setItem('tm'+k,JSON.stringify(o));return T[k]=o}catch(e){return null}
+}
+async function renderMain(){
+ const k=key(view),L=S.log[k]||{};
+ $('#gd').textContent=view.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ try{$('#hd').textContent=new Intl.DateTimeFormat('ru-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'}).format(view)}catch(e){}
+ $('#dp').value=k;
+ const dd=Math.round((new Date(k)-new Date(key(new Date())))/864e5);
+ $('#yd').classList.toggle('on',dd==-1);$('#td').classList.toggle('on',dd==0);
+ const t=await getT(view);
+ if(!t){$('#rows').innerHTML='<div class="card">Не удалось загрузить время намазов. Проверьте интернет — после первой загрузки данные сохраняются.</div>';return}
+ $('#rows').innerHTML=[['fajr','Фаджр'],['sunrise','Восход'],['dhuhr','Зухр'],['asr','Аср'],['maghrib','Магриб'],['isha','Иша']].map(([id,n])=>{
+  const s=L[id],btn=id=='sunrise'?'':`<button class="bt ${s=='t'?'on':''}" data-p="${id}" data-k="t" aria-label="Вовремя">✓</button><button class="bq ${s=='q'?'on':''}" data-p="${id}" data-k="q" aria-label="Каза">↺</button>`;
+  return `<div class="row ${s||''}"><div class="pn" style="${id=='sunrise'?'font-weight:400;color:var(--mut)':''}">${n}</div><div class="tm">${t[id]}</div>${btn}</div>`}).join('');
+}
+$('#rows').onclick=e=>{const b=e.target.closest('button');if(!b)return;const L=S.log[key(view)]=S.log[key(view)]||{},p=b.dataset.p;
+ if(L[p]===b.dataset.k)delete L[p];else L[p]=b.dataset.k;save();renderMain()};
+const mv=n=>{view=new Date(view.getFullYear(),view.getMonth(),view.getDate()+n);renderMain()};
+$('#pd').onclick=()=>mv(-1);$('#nd').onclick=()=>mv(1);
+$('#yd').onclick=()=>{view=new Date();mv(-1)};$('#td').onclick=()=>{view=new Date();renderMain()};
+$('#dp').onchange=e=>{if(e.target.value){const[y,m,d]=e.target.value.split('-');view=new Date(y,m-1,d);renderMain()}};
+function beep(){if(S.sound=='off')return;
+ if(S.sound=='azan'&&S.azan){new Audio(S.azan).play().catch(()=>{});return}
+ try{const c=new(window.AudioContext||webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=660;g.gain.setValueAtTime(.2,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+1.2);o.start();o.stop(c.currentTime+1.2)}catch(e){}}
+function notify(msg){
+ if(S.notif&&'Notification' in window&&Notification.permission=='granted'){const o={body:msg,icon:'icon-192.png',tag:msg};
+  try{new Notification('Трекер Намаза',o)}catch(e){navigator.serviceWorker&&navigator.serviceWorker.ready.then(r=>r.showNotification('Трекер Намаза',o))}}
+ beep();toast(msg,5000)}
+function night(now){const t=tod.t;let m=at(now,t.maghrib),f=at(now,t.fajr);
+ if(now<f)m=new Date(m-864e5);else f=new Date(+f+864e5);
+ const s=new Date(+m+(f-m)*2/3);
+ $('#night').innerHTML=now>=s&&now<f?`🌙 <b>Сейчас последняя треть ночи</b> — время тахаджуда (до ${hm(f)})`:`🌙 Последняя треть ночи: <b>${hm(s)} – ${hm(f)}</b>`}
+async function tick(){
+ const now=new Date();
+ if(!tod||tod.k!=key(now)){if(Date.now()-lastTry>15000){lastTry=Date.now();const t=await getT(now);if(t){tod={k:key(now),t};S.fired={};save()}}if(!tod||tod.k!=key(now))return}
+ const ts=P.map(([id,n])=>[id,n,at(now,tod.t[id])]);
+ let nx=ts.find(x=>x[2]>now),tg;
+ if(nx)tg=nx[2];else{nx=ts[0];tg=new Date(+ts[0][2]+864e5)}
+ const df=Math.max(0,tg-now)/1000|0;
+ $('#nxt').textContent=`До намаза «${nx[1]}» (${hm(tg)})`;
+ $('#cd').textContent=[df/3600|0,df/60%60|0,df%60].map(pad).join(':');
+ ts.forEach(([id,n,d])=>[[0,`Наступило время намаза «${n}»`],[S.pre,`Через ${S.pre} мин. намаз «${n}»`]].forEach(([m,msg],i)=>{
+  if(i&&!+S.pre)return;const w=new Date(d-m*6e4),f=key(now)+id+i;
+  if(now>=w&&now-w<9e4&&!S.fired[f]){S.fired[f]=1;save();notify(msg)}}));
+ night(now)}
+function dur(n){return n>=365?`${n} дн. (≈ ${n/365|0} г. ${(n%365)/30|0} мес.)`:n+' дн.'}
+function renderQaza(){
+ $('#qc').innerHTML=Q.map(([id,n])=>`<div class="qrow"><span>${n}</span><button data-q="${id}" data-d="-1">−</button><b>${S.qaza[id]}</b><button data-q="${id}" data-d="1">+</button></div>`).join('');
+ const v=Object.values(S.qaza),tot=v.reduce((a,b)=>a+b,0),mx=Math.max(...v);
+ $('#qs').innerHTML=tot?`Всего: <b>${tot}</b>. Если читать по 1 дню каза в день — <b>${dur(mx)}</b>; по 2 дня в день — <b>${dur(Math.ceil(mx/2))}</b>.`:'Долгов нет, мааша’Аллах.';
+ calcPrev()}
+const cdays=()=>(+$('#cy').value||0)*365+(+$('#cm').value||0)*30+(+$('#cdd').value||0);
+function calcPrev(){const n=cdays();$('#cr').textContent=n?`Будет добавлено по ${n} на каждый из 6 намазов.`:'Укажите период пропуска.'}
+['#cy','#cm','#cdd'].forEach(s=>$(s).oninput=calcPrev);
+$('#ca').onclick=()=>{const n=cdays();if(!n)return;Q.forEach(([id])=>S.qaza[id]+=n);save();renderQaza();toast('Добавлено')};
+$('#qc').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.qaza[b.dataset.q]=Math.max(0,S.qaza[b.dataset.q]+ +b.dataset.d);save();renderQaza()};
+const st=k=>{const L=S.log[k]||{},v=P.map(p=>L[p[0]]);return v.every(x=>x=='t')?'g':v.some(Boolean)?'y':'n'};
+function renderStats(){
+ const y=mo.getFullYear(),m=mo.getMonth(),n=new Date(y,m+1,0).getDate(),td=key(new Date());
+ let h=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>`<div class="wd">${x}</div>`).join('')+'<div style="background:none"></div>'.repeat((new Date(y,m,1).getDay()+6)%7),on=0,qz=0;
+ for(let i=1;i<=n;i++){const k=key(new Date(y,m,i)),L=S.log[k]||{};P.forEach(p=>{if(L[p[0]]=='t')on++;if(L[p[0]]=='q')qz++});h+=`<div class="${st(k)} ${k>td?'f':''}">${i}</div>`}
+ $('#hg').innerHTML=h;$('#mt').textContent=mo.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+ $('#ms').textContent=`За месяц: вовремя — ${on}, каза — ${qz}`;
+ let s=0,d=new Date();if(st(key(d))!='g')d.setDate(d.getDate()-1);
+ while(st(key(d))=='g'){s++;d.setDate(d.getDate()-1)}
+ $('#sk').textContent=s+' '+(s%10==1&&s%100!=11?'день':[2,3,4].includes(s%10)&&![12,13,14].includes(s%100)?'дня':'дней')}
+$('#mp').onclick=()=>{mo=new Date(mo.getFullYear(),mo.getMonth()-1,1);renderStats()};
+$('#mx').onclick=()=>{mo=new Date(mo.getFullYear(),mo.getMonth()+1,1);renderStats()};
+function show(v){['main','qaza','stats','set'].forEach(x=>$('#v-'+x).hidden=x!=v);
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==v));
+ if(v=='qaza')renderQaza();if(v=='stats'){mo=new Date();renderStats()}scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+function theme(){document.documentElement.dataset.theme=S.theme;document.querySelector('meta[name=theme-color]').content=S.theme=='dark'?'#0f1a17':'#1b6b53'}
+$('#th').onclick=()=>{S.theme=S.theme=='dark'?'light':'dark';save();theme()};
+function upd(){$('#nt').textContent=S.notif?'Включены ✓':'Включить'}
+$('#nt').onclick=async()=>{
+ if(S.notif){S.notif=false;save();return upd()}
+ if(!('Notification' in window))return toast('Браузер не поддерживает уведомления. На iPhone они работают после установки на экран «Домой».',6000);
+ S.notif=await Notification.requestPermission()=='granted';save();upd();
+ S.notif?notify('Уведомления включены'):toast('Разрешение не выдано')};
+$('#ci').innerHTML=Object.keys(CITIES).map(c=>`<option ${c==S.city?'selected':''}>${c}</option>`).join('');
+$('#sc').value=S.school;$('#pr').value=S.pre;$('#sn').value=S.sound;$('#az').value=S.azan;
+const reload=()=>{save();tod=null;lastTry=0;renderMain();tick()};
+$('#ci').onchange=e=>{S.city=e.target.value;reload()};$('#sc').onchange=e=>{S.school=+e.target.value;reload()};
+$('#pr').onchange=e=>{S.pre=+e.target.value;save()};
+$('#sn').onchange=e=>{S.sound=e.target.value;save();beep()};$('#az').onchange=e=>{S.azan=e.target.value.trim();save()};
+$('#ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='namaz-'+key(new Date())+'.json';a.click()};
+$('#im').onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());if(!j.log||!j.qaza)throw 0;Object.assign(S,j);save();location.reload()}catch(x){toast('Неверный файл')}};
+let dp;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').hidden=false});
+const ios=/iphone|ipad|ipod/i.test(navigator.userAgent),sa=matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+if(ios&&!sa)$('#inst').hidden=false;
+$('#inst').onclick=async()=>{if(dp){dp.prompt();await dp.userChoice;dp=null;$('#inst').hidden=true}else toast('Нажмите «Поделиться» → «На экран Домой»',6000)};
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');
+theme();upd();renderMain();tick();setInterval(tick,1000);
+</script></body></html>
